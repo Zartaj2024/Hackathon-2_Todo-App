@@ -1,0 +1,6 @@
+# Python 3.13+ requirements for Todo Console Application
+# Using only built-in Python libraries - no external dependencies
+# This file exists to document the expected Python version and any future dependencies
+
+# For testing
+pytest>=7.0.0

@@ -1,0 +1,8 @@
+# Python 3.13+ requirements for Todo Console Application
+# Using built-in Python libraries plus external dependencies for API communication
+# This file documents the required packages
+
+requests>=2.28.0
+
+# For testing
+pytest>=7.0.0
