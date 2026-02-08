@@ -1,0 +1,159 @@
+/**
+ * Authentication context for the Todo Web Application frontend.
+ */
+
+'use client';
+
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { authClient, authOperations, SessionData, AuthResponse } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
+
+// Define the shape of our auth context
+interface AuthContextType {
+  user: any;
+  session: any;
+  signIn: (email: string, password: string, redirectTo?: string) => Promise<AuthResponse>;
+  signOut: () => Promise<AuthResponse>;
+  signUp: (email: string, password: string, name: string, redirectTo?: string) => Promise<AuthResponse>;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  error: string | null;
+}
+
+// Create the context
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Provider component
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const router = useRouter();
+  const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Check session status on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const sessionData = await authOperations.getSession();
+        if (sessionData.success && sessionData.data) {
+          setSession(sessionData.data);
+        }
+      } catch (err) {
+        console.error('Error getting session:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
+  }, []);
+
+  // Sign in function
+  const handleSignIn = async (email: string, password: string, redirectTo: string = '/dashboard') => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await authOperations.signIn(email, password, redirectTo);
+
+      if (result.success) {
+        router.push(redirectTo);
+        return { success: true, data: result.data };
+      } else {
+        const errorMessage = result.error?.message || 'Sign in failed';
+        setError(errorMessage);
+        return { success: false, error: { message: errorMessage } };
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || 'An error occurred during sign in';
+      setError(errorMessage);
+      console.error('Sign in error:', err);
+      return { success: false, error: { message: errorMessage } };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Sign out function
+  const handleSignOut = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await authOperations.signOut();
+
+      if (result.success) {
+        router.push('/login');
+        return { success: true };
+      } else {
+        const errorMessage = result.error?.message || 'Sign out failed';
+        setError(errorMessage);
+        return { success: false, error: { message: errorMessage } };
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || 'An error occurred during sign out';
+      setError(errorMessage);
+      console.error('Sign out error:', err);
+      return { success: false, error: { message: errorMessage } };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Sign up function
+  const handleSignUp = async (email: string, password: string, name: string, redirectTo: string = '/dashboard') => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await authOperations.signUp(email, password, name, redirectTo);
+
+      if (result.success) {
+        router.push(redirectTo);
+        return { success: true, data: result.data };
+      } else {
+        const errorMessage = result.error?.message || 'Sign up failed';
+        setError(errorMessage);
+        return { success: false, error: { message: errorMessage } };
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || 'An error occurred during sign up';
+      setError(errorMessage);
+      console.error('Sign up error:', err);
+      return { success: false, error: { message: errorMessage } };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Memoized context value
+  const contextValue = React.useMemo(() => ({
+    user: session?.user || null,
+    session,
+    signIn: handleSignIn,
+    signOut: handleSignOut,
+    signUp: handleSignUp,
+    isLoading,
+    isAuthenticated: !!session?.user,
+    error
+  }), [session, isLoading, error]);
+
+  return (
+    <AuthContext.Provider value={contextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+// Hook to use the auth context
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuthContext must be used within an AuthProvider');
+  }
+  return context;
+};
