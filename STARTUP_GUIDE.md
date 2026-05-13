@@ -7,8 +7,9 @@ Follow these 3 steps to start the full application with backend API, Next.js fro
 Open a terminal/command prompt and run:
 
 ```bash
-cd D:\zartaj\Todo_App\phase_2
-python -m uvicorn backend.main:app --reload --port 8000
+cd phase_2/backend
+pip install -r requirements.txt
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 This starts the FastAPI backend server on `http://localhost:8000`.
@@ -19,7 +20,7 @@ Keep this terminal running - the backend must stay active.
 Open a **second** terminal/command prompt and run:
 
 ```bash
-cd D:\zartaj\Todo_App\todo_website
+cd phase_2/frontend
 npm install
 npm run dev
 ```
@@ -32,7 +33,8 @@ The frontend will connect to the backend API automatically.
 Open a **third** terminal/command prompt and run:
 
 ```bash
-cd D:\zartaj\Todo_App\phase_1\src
+export PYTHONPATH=$PYTHONPATH:$(pwd)/phase_1
+cd phase_1/src
 python main.py
 ```
 

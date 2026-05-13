@@ -84,9 +84,36 @@ The application includes an advanced AI-powered chatbot that allows users to man
    ```
 7. Start the frontend development server:
    ```bash
-   cd frontend
+   cd phase_2/frontend
    npm run dev
    ```
+
+## Testing the Application
+
+The application includes a comprehensive full-stack testing suite covering unit logic, REST API integration, security enforcement (RBAC), and AI chatbot functionality.
+
+### 1. Backend & Security Tests
+Run the backend tests using `pytest`. Ensure environment variables are set and the `PYTHONPATH` includes the backend directories.
+
+```bash
+# Set required secrets
+export JWT_SECRET_KEY="test-secret"
+export BETTER_AUTH_SECRET="test-auth"
+export OPENAI_API_KEY="sk-..." # Optional for core tests
+
+# Run all backend tests
+export PYTHONPATH=$PYTHONPATH:$(pwd)/phase_2/backend:$(pwd)/phase_3/backend
+export TESTING=1
+pytest tests/unit tests/integration tests/security
+```
+
+### 2. Frontend Component Tests
+Run component-level tests for the Next.js frontend using `Vitest`.
+
+```bash
+cd phase_2/frontend
+npm test
+```
 
 ## Project Structure
 
