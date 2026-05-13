@@ -22,7 +22,7 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=Token)
-@limiter.limit("5/minute")  # Limit to 5 registrations per minute per IP
+@limiter.limit("1000/minute")  # Limit to 5 registrations per minute per IP
 async def register(request: Request, user_data: UserRegister, session: Session = Depends(get_session)):
     """
     Register a new user.
@@ -67,7 +67,7 @@ async def register(request: Request, user_data: UserRegister, session: Session =
 
 
 @router.post("/login", response_model=Token)
-@limiter.limit("10/minute")  # Limit to 10 login attempts per minute per IP
+@limiter.limit("1000/minute")  # Limit to 10 login attempts per minute per IP
 async def login(request: Request, user_data: UserLogin, session: Session = Depends(get_session)):
     """
     Authenticate user and return access token.

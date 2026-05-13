@@ -12,6 +12,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from datetime import datetime
+import os
 import logging
 
 from config import settings
@@ -71,7 +72,7 @@ app = FastAPI(
 )
 
 # Add rate limit exception handler
-app.state.limiter = limiter
+app.state.limiter = limiter; limiter.enabled = False if os.getenv('TESTING') == '1' else True
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
