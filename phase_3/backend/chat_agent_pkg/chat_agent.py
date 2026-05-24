@@ -22,18 +22,31 @@ class ChatMessage(BaseModel):
 
 class AgentConfig:
     """
-    Configuration for the OpenAI agent.
+    Configuration for the Hugging Face agent (using OpenAI-compatible API).
     """
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.model = "gpt-4o"  # Using a modern, capable model
-        self.temperature = 0.3  # Lower temperature for more consistent responses
-        self.max_tokens = 1000  # Reasonable limit for task management responses
+        hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_TOKEN")
+        if not hf_token:
+            # Fallback to OpenAI if no HF token is provided, or handle as error
+            api_key = os.getenv("OPENAI_API_KEY")
+            self.client = OpenAI(api_key=api_key)
+            self.model = "gpt-4o"
+        else:
+            # Use Hugging Face Inference API (Free tier)
+            self.client = OpenAI(
+                base_url="https://api-inference.huggingface.co/v1/",
+                api_key=hf_token
+            )
+            # Qwen 2.5 and Llama 3.1/3.2 models on HF support tool calling well
+            self.model = os.getenv("HF_MODEL_ID", "Qwen/Qwen2.5-7B-Instruct")
+
+        self.temperature = 0.1  # Lower temperature for more consistent tool calling
+        self.max_tokens = 1000
 
 
 class ChatAgent:
     """
-    OpenAI Agent for handling task management conversations.
+    Agent for handling task management conversations using Hugging Face or OpenAI.
     """
 
     def __init__(self):
