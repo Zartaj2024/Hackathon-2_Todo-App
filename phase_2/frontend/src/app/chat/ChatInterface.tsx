@@ -1,5 +1,6 @@
 'use client';
 
+import { API_BASE_URL } from "@/utils/constants";
 import { useState, useEffect, useRef } from 'react';
 import { FaPaperPlane, FaRobot, FaUser, FaHistory, FaPlus } from 'react-icons/fa';
 import { Button } from '@/components/ui/Button';
@@ -45,7 +46,7 @@ export default function ChatInterface({ userId, accessToken }: ChatInterfaceProp
         if (!userId || !accessToken) return;
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || API_BASE_URL;
             const response = await fetch(`${baseUrl}/users/${userId}/chat/conversations`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -82,7 +83,7 @@ export default function ChatInterface({ userId, accessToken }: ChatInterfaceProp
         setIsLoading(true);
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || API_BASE_URL;
             const response = await fetch(`${baseUrl}/users/${userId}/chat`, {
                 method: 'POST',
                 headers: {
@@ -133,7 +134,7 @@ export default function ChatInterface({ userId, accessToken }: ChatInterfaceProp
         if (!userId || !accessToken) return;
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || API_BASE_URL;
             const response = await fetch(`${baseUrl}/users/${userId}/chat/conversation/${conversationId}`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,

@@ -29,6 +29,11 @@ class DatabaseConnectionManager:
     def _initialize_engine(self):
         """Initialize the database engine with proper error handling."""
         try:
+            connect_args = {}
+            # connect_timeout is not supported by all drivers (like sqlite)
+            if not settings.DATABASE_URL.startswith("sqlite"):
+                connect_args["connect_timeout"] = 10
+
             self.engine = create_engine(
                 settings.DATABASE_URL,
                 echo=settings.DEBUG,
@@ -36,9 +41,7 @@ class DatabaseConnectionManager:
                 pool_recycle=300,  # Recycle connections every 5 minutes
                 pool_size=10,
                 max_overflow=20,
-                connect_args={
-                    "connect_timeout": 10,  # 10 second connection timeout
-                }
+                connect_args=connect_args
             )
             logger.info("Database engine initialized successfully")
         except Exception as e:

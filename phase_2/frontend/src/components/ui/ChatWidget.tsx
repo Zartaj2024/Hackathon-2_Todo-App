@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/lib/auth/context';
+import { API_BASE_URL } from "@/utils/constants";
 import { FaComment, FaTimes, FaPaperPlane, FaRobot, FaUser } from 'react-icons/fa';
 import { Button } from '@/components/ui/Button';
 
@@ -47,7 +48,7 @@ export default function ChatWidget() {
         setIsLoading(true);
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || API_BASE_URL;
             const response = await fetch(`${baseUrl}/users/${userId}/chat`, {
                 method: 'POST',
                 headers: {

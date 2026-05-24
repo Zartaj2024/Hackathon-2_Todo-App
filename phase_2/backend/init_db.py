@@ -5,6 +5,8 @@ Database initialization script for local development.
 from sqlmodel import create_engine, SQLModel
 from models.user import User
 from models.task import Task
+from models.conversation import Conversation
+from models.message import Message
 from config import settings
 
 def init_database():

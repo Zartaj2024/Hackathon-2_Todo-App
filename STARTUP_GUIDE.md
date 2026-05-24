@@ -38,6 +38,15 @@ python main.py
 
 This starts the CLI application that also connects to the same backend API.
 
+## Environment Variables
+
+For full functionality, especially the AI Assistant, you need to set the following environment variables:
+
+- `HF_TOKEN`: Your Hugging Face API token (required for the AI Assistant).
+- `JWT_SECRET_KEY`: A secure random string for signing authentication tokens.
+- `BETTER_AUTH_SECRET`: A secure random string for authentication.
+- `OPENAI_API_KEY`: (Optional) If you prefer to use OpenAI instead of Hugging Face.
+
 ## Access the Applications
 
 - **Backend API**: `http://localhost:8000` (with API documentation at `/docs`)
