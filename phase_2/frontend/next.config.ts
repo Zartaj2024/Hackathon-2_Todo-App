@@ -1,10 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typedRoutes: true,
-  env: {
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1',
+  // Ensure the app works correctly behind the Hugging Face proxy
+  output: 'standalone',
+  async rewrites() {
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: (process.env.BACKEND_URL || 'http://localhost:8000') + '/api/v1/:path*',
+      },
+    ];
   },
 };
 
